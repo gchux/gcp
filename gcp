@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+set -x
+
+export BASE_DIR=$(pwd)
+
+export GCP_DIR="$( cd "$( dirname "$0" )" && pwd )"
+
+export GCP_CONF_DIR="${GCP_DIR}/src/main/conf"
+export GCP_3P_CONF_DIR="${GCP_DIR}/src/third_party/conf"
+export GCP_JAVA_DIR="${GCP_DIR}/src/main/java"
+export GCP_SCRIPTS_DIR="${GCP_DIR}/src/main/scripts"
+
+BLAZE_JAR="${GCP_DIR}/lib/blaze.jar"
+
+export CLASSPATH="${GCP_CONF_DIR}:${GCP_3P_CONF_DIR}:${BLAZE_JAR}:${GCP_JAVA_DIR}"
+
+java -cp ${CLASSPATH} \
+  -Dconfig.trace=loads \
+  -Dbase.dir=${BASE_DIR} \
+  -Dgcp.dir=${GCP_DIR} \
+  -Dgcp.scripts.dir=${GCP_SCRIPTS_DIR} \
+  -Dgcp.scenarios.dir=${GCP_SCENARIOS_DIR} \
+  -Dgcp.script=${2} \
+  -Dscenario=${3} \
+  com.fizzed.blaze.cli.Bootstrap \
+  -Djava.class.path=${CLASSPATH} \
+  -f ${GCP_SCRIPTS_DIR}/main/main.java \
+  -xx ${1}
